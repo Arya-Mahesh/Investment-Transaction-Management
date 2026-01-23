@@ -37,7 +37,7 @@ public class TransactionController {
         return "Sell transaction successful";
     }
 
-    @GetMapping
+    @GetMapping("/history")
     public Page<Transaction> history(Pageable pageable,Authentication authentication){
         String username = authentication.getName();
     return transactionService.history(username,pageable);
