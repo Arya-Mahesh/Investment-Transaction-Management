@@ -1,6 +1,7 @@
 package com.rinar.trasactional_mgmt.service;
 
 import com.rinar.trasactional_mgmt.dto.LoginRequest;
+import com.rinar.trasactional_mgmt.exception.BadRequestException;
 import com.rinar.trasactional_mgmt.model.User;
 import com.rinar.trasactional_mgmt.repo.UserRepository;
 import com.rinar.trasactional_mgmt.security.JWTUtil;
@@ -10,23 +11,27 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private JWTUtil jwtUtil;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JWTUtil jwtUtil;
 
-    //Login logic
+    public AuthService(UserRepository userRepository,
+                       PasswordEncoder passwordEncoder,
+                       JWTUtil jwtUtil) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
+    }
 
-    public String Login(LoginRequest loginRequest){
+
+    public String login(LoginRequest loginRequest){
         User user = userRepository.findByUsername(loginRequest.getUsername())
-                .orElseThrow(()-> new RuntimeException("Invalid username or password") );
+                .orElseThrow(()->  new BadRequestException("Invalid username or password"));
 
         if(!passwordEncoder.matches(loginRequest.getPassword(),user.getPassword())){
-            throw new RuntimeException("Invalid username or password");
-        }
+            throw new BadRequestException("Invalid username or password");
 
+        }
 
      return jwtUtil.generateToken(user.getUsername(),user.getRole());
     }

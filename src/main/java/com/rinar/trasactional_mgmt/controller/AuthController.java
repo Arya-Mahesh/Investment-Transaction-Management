@@ -23,13 +23,13 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody RegisterRequest registerRequest) {
-        userService.Register(registerRequest);
+        userService.register(registerRequest);
         return ResponseEntity.ok("User registered successfully");
     }
 
     @PostMapping("/login")
     public String Login(@RequestBody LoginRequest loginRequest){
         
-        return authService.Login(loginRequest);
+        return authService.login(loginRequest);
     }
 };

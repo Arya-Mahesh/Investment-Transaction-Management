@@ -5,6 +5,8 @@ import com.rinar.trasactional_mgmt.model.Transaction;
 import com.rinar.trasactional_mgmt.service.TransactionService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,8 +19,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 @RestController
 @RequestMapping("/transaction")
 public class TransactionController {
-    @Autowired
-    private TransactionService transactionService;
+    private static final Logger log = LoggerFactory.getLogger(TransactionController.class);
+    private final TransactionService transactionService;
+
+    public TransactionController(TransactionService transactionService) {
+        this.transactionService = transactionService;
+    }
 
 
     @PreAuthorize("hasRole('USER')")
@@ -31,7 +37,7 @@ public class TransactionController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/sell")
-    public String sell(@RequestBody TransactionRequest request,Authentication authentication){
+    public String sell(@Valid @RequestBody TransactionRequest request,Authentication authentication){
         String username = authentication.getName();
         transactionService.sell(username,request);
         return "Sell transaction successful";
@@ -43,16 +49,15 @@ public class TransactionController {
     return transactionService.history(username,pageable);
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/all")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public Page<Transaction> allTransactions(Pageable pageable) {
-        System.out.println("AUTH = " + SecurityContextHolder.getContext().getAuthentication());
+    public Page<Transaction> allTransactions(Pageable pageable, Authentication authentication) {
+        log.debug("Admin {} fetching all transactions", authentication.getName());
         return transactionService.findAll(pageable);
     }
 
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/export")
     public void exportTransactions(HttpServletResponse response) {
         transactionService.exportAllTransactionsToExcel(response);

@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TransactionRequest {
 
-    @NotBlank(message= "Asset name cannot be empty")
-    private String assetName;
+    @NotBlank(message= "stock name cannot be empty")
+    private String stockName;
     @Positive(message = "Quantity must be greater than zero")
     private int quantity;
     @Positive(message = "Price must be greater than zero")

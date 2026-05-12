@@ -1,6 +1,7 @@
 package com.rinar.trasactional_mgmt.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,7 @@ public class Transaction {
     private String username;
 
     @Column(nullable = false)
-    private String assetName;
+    private String stockName;
 
     @Column(nullable = false)
     private String transactionType;
@@ -36,4 +37,6 @@ public class Transaction {
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
+
 }

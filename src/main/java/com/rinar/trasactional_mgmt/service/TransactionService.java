@@ -37,7 +37,7 @@ public class TransactionService {
 
         Transaction tx = new Transaction();
         tx.setUsername(username);
-        tx.setAssetName(request.getAssetName());
+        tx.setStockName(request.getStockName());
         tx.setTransactionType("Buy");
         tx.setQuantity(request.getQuantity());
         tx.setPrice(request.getPrice());
@@ -57,7 +57,7 @@ public class TransactionService {
         }
         Transaction tx = new Transaction();
         tx.setUsername(username);
-        tx.setAssetName(request.getAssetName());
+        tx.setStockName(request.getStockName());
         tx.setTransactionType("Sell");
         tx.setQuantity(request.getQuantity());
         tx.setPrice(request.getPrice());
@@ -85,7 +85,7 @@ public class TransactionService {
             Row header = sheet.createRow(0);
             header.createCell(0).setCellValue("ID");
             header.createCell(1).setCellValue("Username");
-            header.createCell(2).setCellValue("Asset");
+            header.createCell(2).setCellValue("Stock");
             header.createCell(3).setCellValue("Type");
             header.createCell(4).setCellValue("Quantity");
             header.createCell(5).setCellValue("Price");
@@ -108,7 +108,7 @@ public class TransactionService {
                     Row row = sheet.createRow(rowIndex++);
                     row.createCell(0).setCellValue(tx.getId());
                     row.createCell(1).setCellValue(tx.getUsername());
-                    row.createCell(2).setCellValue(tx.getAssetName());
+                    row.createCell(2).setCellValue(tx.getStockName());
                     row.createCell(3).setCellValue(tx.getTransactionType());
                     row.createCell(4).setCellValue(tx.getQuantity());
                     row.createCell(5).setCellValue(tx.getPrice());

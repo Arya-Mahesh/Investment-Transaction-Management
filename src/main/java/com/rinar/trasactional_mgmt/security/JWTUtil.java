@@ -3,6 +3,7 @@ package com.rinar.trasactional_mgmt.security;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -10,16 +11,22 @@ import java.util.Date;
 
 @Component
 public class JWTUtil {
-    private final String SECRET_KEY = "my_super_secure_jwt_secret_key_1234567890";
-    private final long EXPIRATION_TIME = 1000 * 60 * 60;
-    private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+
+    private final Key key;
+    private final long expirationTime;
+
+    public JWTUtil(@Value("${jwt.secret}") String secret,
+                   @Value("${jwt.expiration}") long expirationTime) {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+        this.expirationTime = expirationTime;
+    }
 
     public String generateToken(String username,String role ){
         return Jwts.builder()
                 .setSubject(username)
                 .claim("role",role)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(key,SignatureAlgorithm.HS256)
                 .compact();
 

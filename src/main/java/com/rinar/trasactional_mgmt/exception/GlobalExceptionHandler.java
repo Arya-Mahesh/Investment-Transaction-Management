@@ -1,5 +1,6 @@
 package com.rinar.trasactional_mgmt.exception;
 
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.rinar.trasactional_mgmt.exception.ErrorResponse;
@@ -33,8 +34,12 @@ public class GlobalExceptionHandler {
             MethodArgumentNotValidException ex) {
 
         String message = ex.getBindingResult()
-                .getFieldError()
-                .getDefaultMessage();
+                .getFieldErrors()
+                .stream()
+                .findFirst()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .orElse("Validation failed");
+
 
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
@@ -43,4 +48,6 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
+
+
 }
